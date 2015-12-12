@@ -125,12 +125,15 @@ def getWeather():
     windSpeed = weatherObject.get_wind()['speed']
 
     # concat them into a string so it'll return a list rather than a tuple
-    if temperature > 3:
+    if temperature > 18:
+        tempString = temperature + " degrees: Taps aff!"
+    elif temperature > 3:
         tempString = "Temperature: "+str(temperature)+" degrees"
     elif temperature > 0:
         tempString = "Baltic."
     elif temperature < 0:
         tempString = "Bloody freezing."
+    
     weatherDetailString = "Weather Details: "+weatherDetails
     
     weatherList.append("Temperature: "+tempString)
