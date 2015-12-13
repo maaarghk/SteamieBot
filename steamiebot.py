@@ -1,22 +1,17 @@
+#!/usr/bin/python
+
 """
 /r/glasgow daily banter thread poster
 """
 
-
-
-import re,pyowm,praw,datetime,sys
+import re, pyowm, praw, datetime, sys, OAuth2Util
 from six.moves import urllib
-from bs4 import BeautifulSoup,SoupStrainer
+from bs4 import BeautifulSoup, SoupStrainer
+from OAuth2Util import OAuth2Util;
 
-#reload(sys)
-#sys.setdefaultencoding('utf8')
-
-
-r=praw.Reddit('Steamie Poster for /r/glasgow')
-#r.set_oauth_app_info(client_id='vxxr_Psq_HDGLw',client_secret='bz2RJu64SvQQ8ckrAgqYYsww-0o',redirect_uri='http://127.0.0.1:65010/','authorize_callback')
-
-r.login('','')
-
+r = praw.Reddit('Steamie Poster for /r/glasgow v0.1.0')
+o = OAuth2Util(r)
+o.refresh()
 
 def getTrains():
 
@@ -25,7 +20,7 @@ def getTrains():
 
     trainStatus = []
     onlyupdates = SoupStrainer(attrs = {"id" : "lu_update_body"})
-    
+
     glcPage = urllib.request.urlopen('http://www.journeycheck.com/scotrail/route?from=&to=GLC&action=search&savedRoute=')
     glqPage = urllib.request.urlopen('http://www.journeycheck.com/scotrail/route?from=&to=GLQ&action=search&savedRoute=')
 
@@ -34,10 +29,10 @@ def getTrains():
 
     # the following finds if the Line Updates section contains a number greater than 0.
     # if it does, it goes on to return the info line by line in a list.
-    
+
     lineUpdatesGlc = glcSoup.find_all(id="headingTextLU")
     lineUpdatesGlq = glqSoup.find_all(id="headingTextLU")
-    
+
 
     if (int(filter(str.isdigit,str(lineUpdatesGlc[0])))) + (int(filter(str.isdigit,str(lineUpdatesGlq[0])))) == 0:
         print '0'
@@ -51,7 +46,7 @@ def getTrains():
         combinedTrains = glcText + glqText
 
         # Take out the stuff we don't want to see (whitespace, code & non-relevant stuff)
-        
+
         for line in combinedTrains.splitlines():
             contentCheck = re.search('[a-zA-Z]',line)
 
@@ -66,22 +61,15 @@ def getTrains():
                     pass
                 elif "Impact" in line:
                     pass
-                
+
                 else:
                     stripline = line.strip()
                     trainStatus.append(stripline)
             else:
                 pass
-    
-        
+
+
     return trainStatus
-
-
-
-
-
-
-                                    
 
 def getGigInfo():
 
@@ -89,34 +77,28 @@ def getGigInfo():
     # locations from the List website as a list.
 
     gigList = []
-    
+
     # Get the webpage and parse it with BeautifulSoup
     gigPage = urllib.request.urlopen('https://www.list.co.uk/events/music/when:tonight/location:Glasgow(55.8621,-4.2465)/distance:5/')
     gigSoup = BeautifulSoup(gigPage,'html.parser')
     titleSet = gigSoup.find_all('h3') # finds the relevant titles
     for title in titleSet:
-        titleString = re.search('(?<=title=")(.*)(?=">)',str(title)) # regex to isolate the sentence 
+        titleString = re.search('(?<=title=")(.*)(?=">)',str(title)) # regex to isolate the sentence
         if titleString:
             gigInfo = titleString.group(1)
             gigList.append(unicode(gigInfo,'utf-8'))
     return gigList
-
-
-
-
-
-
 
 def getWeather():
 
     # Function to return the weather, temperature
     # and wind speed as a list. API allows for more
     # detail if we want to put it in.
-    
+
     weatherList = []
-    
+
     owm=pyowm.OWM(API_key='2e55f450fa37e779a4172bffbaac75a5') # API key for Open Weather Map
-    
+
     weatherObject = owm.weather_at_place('Glasgow,UK').get_weather() # Putting Scotland instead of UK throws an error. Fucksake.
 
     # get the details
@@ -133,9 +115,9 @@ def getWeather():
         tempString = "Baltic."
     elif temperature < 0:
         tempString = "Bloody freezing."
-    
+
     weatherDetailString = "Weather Details: "+weatherDetails
-    
+
     weatherList.append("Temperature: "+tempString)
     weatherList.append(weatherDetailString)
 
@@ -144,22 +126,13 @@ def getWeather():
     if windSpeed > 20:
         weatherList.append("Blowy as fuck")
     if windSpeed < 20:
-        weatherListString = "Wind: "+str(windSpeed)+"mph"
+        weatherListString = "Wind: " + str(windSpeed) + " mph"
         weatherList.append(weatherListString)
 
     return weatherList
 
-
-
-    
-
 def createPost():
-    days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
-    months = ["","January","February","March","April","May","June","July","August","September","October","November","December"]
-    date = datetime.date.today()
-    today = days[datetime.date.today().weekday()]+', '+str(date.day)+' '+months[date.month]+' '+str(date.year)
-
-    title = "The Steamie - "+today
+    title = "The Steamie - {0:%A} {0:%-d} {0:%B} {0:%Y}".format(datetime.date.today())
 
     weather = getWeather()
     trains = getTrains()
@@ -173,11 +146,14 @@ def createPost():
     gigString = ""
     for line in gigs:
         gigString += line+"\n\n"
-     
-    
+
+
     body = "**Weather**\n\n"+weather[1]+"\n\n"+weather[0]+"\n\n"+weather[2]+"\n\n"+"**Travel**\n\n"+trainString+"\n\n"+"**What's On Today**"+"\n\n"+gigString
     return title,body
 
 post = createPost()
 
-r.submit('glasgow',post[0],text=post[1])
+print post[0] + "\n\n"
+print post[1]
+
+r.submit('steamiebottest',post[0],text=post[1])
