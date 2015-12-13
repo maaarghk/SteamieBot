@@ -18,6 +18,46 @@ r=praw.Reddit('Steamie Poster for /r/glasgow')
 r.login('','')
 
 
+def getSong(r): # Takes the PRAW object
+    # Users must have held their account for this number of days to be able to submit suggestions
+    how_old = 30
+
+    inbox = r.get_inbox()
+
+    current_time = datetime.datetime.now()
+
+    author_list = []
+    links_list = []
+
+    for messages in inbox:
+        received_time = datetime.datetime.fromtimestamp(int(messages.created_utc))
+        time_difference = current_time - received_time
+        if time_difference < datetime.timedelta(days=1):
+            if messages.author in author_list:
+                print "User '"+str(messages.author)+"' has already submitted an eligible link for today's post"
+            else:
+                sending_user = r.get_redditor(messages.author)
+                sending_user_join_date = datetime.datetime.fromtimestamp(int(sending_user.created_utc))
+                time_difference = current_time - sending_user_join_date
+                if time_difference < datetime.timedelta(days=how_old):
+                    print "User '"+str(messages.author)+"' must be",how_old, "days old to submit songs"
+                    continue
+                available_links = re.findall(r'(https?://[^\s]+)', messages.body)
+                author_list.append(messages.author)
+                for link in available_links:
+                    if "youtube.com/" in link:
+                        links_list.append(link)
+                        author_list.append(messages.author)
+                        # Only allow one Youtube link per message - we'll just take the first
+                        break
+
+    number_of_songs = len(links_list)
+    if number_of_songs==0:
+        return "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    else:
+        number = random.randint(0,number_of_songs-1)
+        return links_list[number]
+
 def getTrains():
 
     # Function to find line updates from Scotrail
