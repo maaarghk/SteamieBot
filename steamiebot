@@ -193,7 +193,7 @@ def getWeather():
 
     
 
-def createPost():
+def createPost(r):
     days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
     months = ["","January","February","March","April","May","June","July","August","September","October","November","December"]
     date = datetime.date.today()
@@ -213,11 +213,12 @@ def createPost():
     gigString = ""
     for line in gigs:
         gigString += line+"\n\n"
-     
+
+    tune_string = getSong(r)
     
-    body = "**Weather**\n\n"+weather[1]+"\n\n"+weather[0]+"\n\n"+weather[2]+"\n\n"+"**Travel**\n\n"+trainString+"\n\n"+"**What's On Today**"+"\n\n"+gigString
+    body = "**Weather**\n\n"+weather[1]+"\n\n"+weather[0]+"\n\n"+weather[2]+"\n\n"+"**Travel**\n\n"+trainString+"\n\n"+"**What's On Today**"+"\n\n"+gigString+"\n\n"+"**Tune of the day**\n\n"+tune_string
     return title,body
 
-post = createPost()
+post = createPost(r)
 
 r.submit('glasgow',post[0],text=post[1])
