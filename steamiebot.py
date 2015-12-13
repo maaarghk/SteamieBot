@@ -8,8 +8,19 @@ import re, pyowm, praw, datetime, sys, OAuth2Util
 from six.moves import urllib
 from bs4 import BeautifulSoup, SoupStrainer
 from OAuth2Util import OAuth2Util;
+import ConfigParser;
 
-r = praw.Reddit('Steamie Poster for /r/glasgow v0.1.0')
+if len(sys.argv) > 1:
+    configFile = sys.argv[1]
+else:
+    configFile = "steamiebot.ini"
+
+config = ConfigParser.ConfigParser()
+config.read(configFile)
+subreddit = config.get('config', 'subreddit')
+linkFlair = config.get('config', 'link_flair')
+
+r = praw.Reddit("Steamie Poster for /r/glasgow v0.1.0")
 o = OAuth2Util(r)
 o.refresh()
 
@@ -208,4 +219,5 @@ post = createPost(r)
 print post[0] + "\n\n"
 print post[1]
 
-r.submit('steamiebottest',post[0],text=post[1])
+submission = r.submit(subreddit,post[0],text=post[1])
+r.select_flair(submission, flair_template_id=linkFlair)
