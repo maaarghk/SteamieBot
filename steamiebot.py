@@ -13,6 +13,47 @@ r = praw.Reddit('Steamie Poster for /r/glasgow v0.1.0')
 o = OAuth2Util(r)
 o.refresh()
 
+def getSong(r): # Takes the PRAW object
+    # Users must have held their account for this number of days to be able to submit suggestions
+    how_old = 30
+
+    messages = r.get_unread(unset_has_mail=True,update_user=True)
+
+    current_time = datetime.datetime.now()
+
+    author_list = []
+    links_list = []
+
+    for message in messages:
+        print message
+        received_time = datetime.datetime.fromtimestamp(int(message.created_utc))
+        time_difference = current_time - received_time
+        if time_difference < datetime.timedelta(days=1):
+            if message.author in author_list:
+                print "User '"+str(message.author)+"' has already submitted an eligible link for today's post"
+            else:
+                sending_user = r.get_redditor(message.author)
+                sending_user_join_date = datetime.datetime.fromtimestamp(int(sending_user.created_utc))
+                time_difference = current_time - sending_user_join_date
+                if time_difference < datetime.timedelta(days=how_old):
+                    print "User '"+str(message.author)+"' must be",how_old, "days old to submit songs"
+                    continue
+                available_links = re.findall(r'(https?://[^\s]+)', message.body)
+                author_list.append(message.author)
+                for link in available_links:
+                    if "youtube.com/" in link:
+                        links_list.append(link)
+                        author_list.append(message.author)
+                        # Only allow one Youtube link per message - we'll just take the first
+                        break
+
+    number_of_songs = len(links_list)
+    if number_of_songs==0:
+        return "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    else:
+        number = random.randint(0,number_of_songs-1)
+        return links_list[number]
+
 def getTrains():
 
     # Function to find line updates from Scotrail
@@ -118,8 +159,8 @@ def getWeather():
 
     weatherDetailString = "Weather Details: "+weatherDetails
 
-    weatherList.append("Temperature: "+tempString)
     weatherList.append(weatherDetailString)
+    weatherList.append("Temperature: " + tempString)
 
     # Fairly obvious what this does :) could add stuff
     # like this for other temp/weather events
@@ -131,27 +172,38 @@ def getWeather():
 
     return weatherList
 
-def createPost():
+def createPost(r):
     title = "The Steamie - {0:%A} {0:%-d} {0:%B} {0:%Y}".format(datetime.date.today())
 
     weather = getWeather()
     trains = getTrains()
     gigs = getGigInfo()
+    tuneString = getSong(r)
+
+    weatherString = ""
+    for line in weather:
+        weatherString += line + "\n\n"
 
     trainString = ""
     for line in trains:
-        trainString += line
-        trainString += "\n\n"
+        trainString += line + "\n\n"
 
     gigString = ""
     for line in gigs:
-        gigString += line+"\n\n"
+        gigString += line + "\n\n"
 
+    body = ("**Weather**\n\n"
+            + weatherString + "\n\n"
+            "**Travel**\n\n"
+            + trainString + "\n\n"
+            "**What's On Today**\n\n"
+            + gigString + "\n\n"
+            "**Tune of the day**\n\n"
+            + tuneString)
 
-    body = "**Weather**\n\n"+weather[1]+"\n\n"+weather[0]+"\n\n"+weather[2]+"\n\n"+"**Travel**\n\n"+trainString+"\n\n"+"**What's On Today**"+"\n\n"+gigString
     return title,body
 
-post = createPost()
+post = createPost(r)
 
 print post[0] + "\n\n"
 print post[1]
