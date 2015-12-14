@@ -36,6 +36,8 @@ def getSong(r): # Takes the PRAW object
     links_list = []
 
     for message in messages:
+        if message.was_comment: # We don't want to include comment replies, just PMs
+            continue
         print message
         received_time = datetime.datetime.fromtimestamp(int(message.created_utc))
         time_difference = current_time - received_time
