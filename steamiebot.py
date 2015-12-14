@@ -210,7 +210,8 @@ def createPost(r):
             "**What's On Today**\n\n"
             + gigString + "\n\n"
             "**Tune of the day**\n\n"
-            + tuneString)
+            + tuneString
+            + "[Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)")
 
     return title,body
 
