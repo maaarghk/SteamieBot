@@ -36,6 +36,7 @@ def getSong(r): # Takes the PRAW object
     links_list = []
 
     for message in messages:
+        #message.mark_as_read()
         if message.was_comment: # We don't want to include comment replies, just PMs
             continue
         print message
