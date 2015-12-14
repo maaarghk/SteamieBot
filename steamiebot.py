@@ -54,9 +54,13 @@ def getSong(r): # Takes the PRAW object
                     print "User '"+str(message.author)+"' must be",how_old, "days old to submit songs"
                     continue
                 available_links = re.findall(r'(https?://[^\s]+)', message.body)
-                author_list.append(message.author)
                 for link in available_links:
                     if "youtube.com/" in link:
+                        links_list.append(link)
+                        author_list.append(message.author)
+                        # Only allow one Youtube link per message - we'll just take the first
+                        break
+                    elif "youtu.be/" in link:
                         links_list.append(link)
                         author_list.append(message.author)
                         # Only allow one Youtube link per message - we'll just take the first
