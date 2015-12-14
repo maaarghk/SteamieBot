@@ -13,7 +13,7 @@ import ConfigParser;
 if len(sys.argv) > 1:
     configFile = sys.argv[1]
 else:
-    configFile = "steamietest.ini"
+    configFile = "steamiebot.ini"
 
 config = ConfigParser.ConfigParser()
 config.read(configFile)
