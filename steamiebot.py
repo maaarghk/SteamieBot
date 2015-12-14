@@ -27,7 +27,7 @@ o.refresh()
 def getSong(r): # Takes the PRAW object
     # Users must have held their account for this number of days to be able to submit suggestions
     how_old = 30
-
+    song_strings = ["youtube.com/","youtu.be/"]
     messages = r.get_unread(unset_has_mail=True,update_user=True)
 
     current_time = datetime.datetime.now()
@@ -55,12 +55,7 @@ def getSong(r): # Takes the PRAW object
                     continue
                 available_links = re.findall(r'(https?://[^\s]+)', message.body)
                 for link in available_links:
-                    if "youtube.com/" in link:
-                        links_list.append(link)
-                        author_list.append(message.author)
-                        # Only allow one Youtube link per message - we'll just take the first
-                        break
-                    elif "youtu.be/" in link:
+                    if any(song_string in link for song_string in song_strings):
                         links_list.append(link)
                         author_list.append(message.author)
                         # Only allow one Youtube link per message - we'll just take the first
