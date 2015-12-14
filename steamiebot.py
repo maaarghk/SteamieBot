@@ -224,4 +224,5 @@ print post[0] + "\n\n"
 print post[1]
 
 submission = r.submit(subreddit,post[0],text=post[1])
+submission.sticky()
 r.select_flair(submission, flair_template_id=linkFlair)
