@@ -4,7 +4,7 @@
 /r/glasgow daily banter thread poster
 """
 
-import re, pyowm, praw, datetime, sys, OAuth2Util
+import re, pyowm, praw, datetime, sys, OAuth2Util, random
 from six.moves import urllib
 from bs4 import BeautifulSoup, SoupStrainer
 from OAuth2Util import OAuth2Util;
