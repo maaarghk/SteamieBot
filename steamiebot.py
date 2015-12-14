@@ -13,7 +13,7 @@ import ConfigParser;
 if len(sys.argv) > 1:
     configFile = sys.argv[1]
 else:
-    configFile = "steamiebot.ini"
+    configFile = "steamietest.ini"
 
 config = ConfigParser.ConfigParser()
 config.read(configFile)
@@ -43,6 +43,8 @@ def getSong(r): # Takes the PRAW object
             if message.author in author_list:
                 print "User '"+str(message.author)+"' has already submitted an eligible link for today's post"
             else:
+                if not message.author:
+                    continue
                 sending_user = r.get_redditor(message.author)
                 sending_user_join_date = datetime.datetime.fromtimestamp(int(sending_user.created_utc))
                 time_difference = current_time - sending_user_join_date
