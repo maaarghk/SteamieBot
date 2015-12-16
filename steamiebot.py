@@ -7,22 +7,9 @@
 import re, pyowm, praw, datetime, sys, OAuth2Util, random
 from six.moves import urllib
 from bs4 import BeautifulSoup, SoupStrainer
-from OAuth2Util import OAuth2Util;
-import ConfigParser;
-
-if len(sys.argv) > 1:
-    configFile = sys.argv[1]
-else:
-    configFile = "steamiebot.ini"
-
-config = ConfigParser.ConfigParser()
-config.read(configFile)
-subreddit = config.get('config', 'subreddit')
-linkFlair = config.get('config', 'link_flair')
-
-r = praw.Reddit("Steamie Poster for /r/glasgow v0.1.0")
-o = OAuth2Util(r)
-o.refresh()
+from OAuth2Util import OAuth2Util
+import ConfigParser
+from time import sleep
 
 def getSong(r): # Takes the PRAW object
     # Users must have held their account for this number of days to be able to submit suggestions
@@ -219,11 +206,35 @@ def createPost(r):
 
     return title,body
 
-post = createPost(r)
 
-print post[0] + "\n\n"
-print post[1]
+def postSteamie(configFile):
+    config = ConfigParser.ConfigParser()
+    config.read(configFile)
+    subreddit = config.get('config', 'subreddit')
+    linkFlair = config.get('config', 'link_flair')
 
-submission = r.submit(subreddit,post[0],text=post[1])
-submission.sticky()
-r.select_flair(submission, flair_template_id=linkFlair)
+    r = praw.Reddit("Steamie Poster for /r/glasgow v0.1.0")
+    o = OAuth2Util(r)
+    o.refresh()
+
+    post = createPost(r)
+
+    print post[0] + "\n\n"
+    print post[1]
+
+    submission = r.submit(subreddit,post[0],text=post[1])
+    submission.sticky()
+    r.select_flair(submission, flair_template_id=linkFlair)
+
+def tryPost(configFile):
+    attempt_start = datetime.datetime.now()
+    success = False
+    while (datetime.datetime.now()-attempt_start) < datetime.timedelta(hours=2):
+        try:
+            print("Attempting to post 'The Steamie'")
+            postSteamie(configFile)
+            success = True
+            break
+        except:
+            print("Failed to make daily post. Waiting 15 minutes to retry")
+            sleep(15*60) #Sleep in seconds
