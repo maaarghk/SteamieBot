@@ -56,6 +56,15 @@ def getSong(r): # Takes the PRAW object
         number = random.randint(0,number_of_songs-1)
         return links_list[number]
 
+# function to remove duplicate litems from lists.
+# stolen from stackoverflow. SHAMELESS.
+def uniq(input):
+  output = []
+  for x in input:
+    if x not in output:
+      output.append(x)
+  return output
+
 def getTrains():
 
     # Function to find line updates from Scotrail
@@ -112,7 +121,7 @@ def getTrains():
                 pass
 
 
-    return trainStatus
+    return uniq(trainStatus)
 
 def getGigInfo():
 
@@ -145,9 +154,9 @@ def getWeather():
     weatherObject = owm.weather_at_place('Glasgow,UK').get_weather() # Putting Scotland instead of UK throws an error. Fucksake.
 
     # get the details
-    temperature = weatherObject.get_temperature(unit='celsius')['temp']
+    temperature = int(weatherObject.get_temperature(unit='celsius')['temp'])
     weatherDetails = weatherObject.get_detailed_status()
-    windSpeed = weatherObject.get_wind()['speed']
+    windSpeed = int(weatherObject.get_wind()['speed'])
 
     # concat them into a string so it'll return a list rather than a tuple
     if temperature > 18:
