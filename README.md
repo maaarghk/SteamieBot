@@ -2,7 +2,7 @@
 To test run
 
 ```
-./steamiebot.py steamietest.ini
+python run_steamie.py steamietest.ini
 ```
 
 otherwise beware posting to live subreddit :)
