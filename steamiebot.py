@@ -162,7 +162,7 @@ def getWeather():
     if temperature > 18:
         tempString = temperature + " degrees: Taps aff!"
     elif temperature > 3:
-        tempString = "Temperature: "+str(temperature)+" degrees"
+        tempString = str(temperature)+" degrees"
     elif temperature > 0:
         tempString = "Baltic."
     elif temperature < 0:
