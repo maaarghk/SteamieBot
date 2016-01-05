@@ -39,7 +39,7 @@ def getSong(r): # Takes the PRAW object
                 sending_user_join_date = datetime.datetime.fromtimestamp(int(sending_user.created_utc))
                 time_difference = current_time - sending_user_join_date
                 if time_difference < datetime.timedelta(days=how_old):
-                    print "User '"+str(message.author)+"' must be",how_old, "days old to submit songs"
+                    print "User '"+str(message.author)+"' must be " + how_old + " days old to submit songs"
                     continue
                 available_links = re.findall(r'(https?://[^\s]+)', message.body)
                 for link in available_links:
@@ -59,11 +59,11 @@ def getSong(r): # Takes the PRAW object
 # function to remove duplicate litems from lists.
 # stolen from stackoverflow. SHAMELESS.
 def uniq(input):
-  output = []
-  for x in input:
-    if x not in output:
-      output.append(x)
-  return output
+    output = []
+    for x in input:
+        if x not in output:
+            output.append(x)
+    return output
 
 def getTrains():
 
@@ -141,7 +141,7 @@ def getGigInfo():
             gigList.append(unicode(gigInfo,'utf-8'))
     return gigList
 
-def getWeather():
+def getWeather(apiKey):
 
     # Function to return the weather, temperature
     # and wind speed as a list. API allows for more
@@ -149,7 +149,7 @@ def getWeather():
 
     weatherList = []
 
-    owm=pyowm.OWM(API_key='2e55f450fa37e779a4172bffbaac75a5') # API key for Open Weather Map
+    owm=pyowm.OWM(API_key=apiKey) # API key for Open Weather Map
 
     weatherObject = owm.weather_at_place('Glasgow,UK').get_weather() # Putting Scotland instead of UK throws an error. Fucksake.
 
@@ -183,10 +183,12 @@ def getWeather():
 
     return weatherList
 
-def createPost(r):
+def createPost(r, config):
     title = "The Steamie - {0:%A} {0:%-d} {0:%B} {0:%Y}".format(datetime.date.today())
 
-    weather = getWeather()
+    weatherApiKey = config.get('config', 'openweather_api_key')
+
+    weather = getWeather(weatherApiKey)
     trains = getTrains()
     gigs = getGigInfo()
     tuneString = getSong(r)
@@ -226,7 +228,7 @@ def postSteamie(configFile):
     o = OAuth2Util(r)
     o.refresh()
 
-    post = createPost(r)
+    post = createPost(r, config)
 
     print post[0] + "\n\n"
     print post[1]
