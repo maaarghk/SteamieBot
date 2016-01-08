@@ -1,0 +1,32 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+SteamieBot	/Users/Mark/tmp/SteamieBot/README.md	/^# SteamieBot$/;"	function	line:1
+sys	/Users/Mark/tmp/SteamieBot/run_steamie.py	/^import sys$/;"	namespace	line:2
+tryPost	/Users/Mark/tmp/SteamieBot/run_steamie.py	/^from steamiebot import tryPost$/;"	namespace	line:3
+configFile	/Users/Mark/tmp/SteamieBot/run_steamie.py	/^    configFile = sys.argv[1]$/;"	variable	line:7
+configFile	/Users/Mark/tmp/SteamieBot/run_steamie.py	/^    configFile = "steamiebot.ini"$/;"	variable	line:9
+re	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^import re, pyowm, praw, datetime, sys, OAuth2Util, random$/;"	namespace	line:7
+pyowm	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^import re, pyowm, praw, datetime, sys, OAuth2Util, random$/;"	namespace	line:7
+praw	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^import re, pyowm, praw, datetime, sys, OAuth2Util, random$/;"	namespace	line:7
+datetime	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^import re, pyowm, praw, datetime, sys, OAuth2Util, random$/;"	namespace	line:7
+sys	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^import re, pyowm, praw, datetime, sys, OAuth2Util, random$/;"	namespace	line:7
+OAuth2Util	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^import re, pyowm, praw, datetime, sys, OAuth2Util, random$/;"	namespace	line:7
+random	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^import re, pyowm, praw, datetime, sys, OAuth2Util, random$/;"	namespace	line:7
+urllib	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^from six.moves import urllib$/;"	namespace	line:8
+BeautifulSoup	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^from bs4 import BeautifulSoup, SoupStrainer$/;"	namespace	line:9
+SoupStrainer	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^from bs4 import BeautifulSoup, SoupStrainer$/;"	namespace	line:9
+OAuth2Util	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^from OAuth2Util import OAuth2Util$/;"	namespace	line:10
+ConfigParser	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^import ConfigParser$/;"	namespace	line:11
+sleep	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^from time import sleep$/;"	namespace	line:12
+getSong	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^def getSong(r): # Takes the PRAW object$/;"	function	line:14
+uniq	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^def uniq(input):$/;"	function	line:61
+getTrains	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^def getTrains():$/;"	function	line:68
+getGigInfo	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^def getGigInfo():$/;"	function	line:126
+getWeather	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^def getWeather(apiKey):$/;"	function	line:144
+createPost	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^def createPost(r, config):$/;"	function	line:186
+postSteamie	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^def postSteamie(configFile):$/;"	function	line:221
+tryPost	/Users/Mark/tmp/SteamieBot/steamiebot.py	/^def tryPost(configFile):$/;"	function	line:240

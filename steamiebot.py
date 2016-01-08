@@ -4,7 +4,7 @@
 /r/glasgow daily banter thread poster
 """
 
-import re, pyowm, praw, datetime, sys, OAuth2Util, random
+import re, pyowm, praw, datetime, sys, OAuth2Util, random, traceback
 from six.moves import urllib
 from bs4 import BeautifulSoup, SoupStrainer
 from OAuth2Util import OAuth2Util
@@ -160,15 +160,15 @@ def getWeather(apiKey):
 
     # concat them into a string so it'll return a list rather than a tuple
     if temperature > 18:
-        tempString = temperature + " degrees: Taps aff!"
+        tempString = str(temperature) + " degrees: Taps aff!"
     elif temperature > 3:
-        tempString = str(temperature)+" degrees"
+        tempString = str(temperature) + " degrees"
     elif temperature > 0:
         tempString = "Baltic."
-    elif temperature < 0:
+    elif temperature <= 0:
         tempString = "Bloody freezing."
 
-    weatherDetailString = "Weather Details: "+weatherDetails
+    weatherDetailString = "Weather Details: " + weatherDetails
 
     weatherList.append(weatherDetailString)
     weatherList.append("Temperature: " + tempString)
@@ -246,6 +246,7 @@ def tryPost(configFile):
             postSteamie(configFile)
             success = True
             break
-        except:
-            print("Failed to make daily post. Waiting 15 minutes to retry")
+        except Exception, err:
+            print("Failed to make daily post. Waiting 15 minutes to retry. Error: ")
+            traceback.print_exc()
             sleep(15*60) #Sleep in seconds

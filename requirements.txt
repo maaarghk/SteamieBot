@@ -1,0 +1,4 @@
+pyowm==2.3.0
+praw==3.3.0
+praw-OAuth2Util==0.3.3
+beautifulsoup4==4.4.0
