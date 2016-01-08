@@ -1,3 +1,4 @@
 steamiebot.ini
 oauth.ini
 *.pyc
+.tags
