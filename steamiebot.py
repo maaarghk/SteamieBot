@@ -51,7 +51,12 @@ def getSong(r): # Takes the PRAW object
 
     number_of_songs = len(links_list)
     if number_of_songs==0:
-        return "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        scottishmusictop = r.get_subreddit('scottishmusic').get_hot(limit=5)
+        for submission in scottishmusictop:
+            if "youtube" in submission.url:
+                links_list.append(submission.url)              
+                number = random.randint(0,number_of_songs-1)
+                return links_list[number]
     else:
         number = random.randint(0,number_of_songs-1)
         return links_list[number]
