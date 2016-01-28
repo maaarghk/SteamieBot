@@ -11,6 +11,23 @@ from OAuth2Util import OAuth2Util
 import ConfigParser
 from time import sleep
 
+def getMarket(r):
+    marketString = ''
+    current_time = datetime.datetime.now()
+    newposts = r.get_subreddit('GlasgowMarket').get_new()
+    posts = {}
+    for post in newposts:
+        received_time = datetime.datetime.fromtimestamp(int(post.created_utc))
+        time_difference = current_time - received_time
+        if time_difference < datetime.timedelta(days=1):
+            posts[post.permalink] = post.title
+    if len(posts)==0:
+        marketString = 'No recent posts'
+    else:
+        for key,value in posts.iteritems():
+            marketString = marketString + '['+value+']'+'('+key+')'+'\n\n'
+    return marketString
+
 def getSong(r): # Takes the PRAW object
     # Users must have held their account for this number of days to be able to submit suggestions
     how_old = 30
@@ -197,6 +214,7 @@ def createPost(r, config):
     trains = getTrains()
     gigs = getGigInfo()
     tuneString = getSong(r)
+    marketString = getMarket(r)
 
     weatherString = ""
     for line in weather:
@@ -215,7 +233,9 @@ def createPost(r, config):
             "**Travel**\n\n"
             + trainString + "\n\n"
             "**What's On Today**\n\n"
-            + gigString + "\n\n"
+            + gigString + "\n\n"+
+            "**/r/GlasgowMarket Digest**\n\n"
+            +marketString + '\n\n' + 
             "**Tune of the day**\n\n"
             + tuneString
             + "\n\n[Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)")
