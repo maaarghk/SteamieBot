@@ -233,7 +233,7 @@ def createPost(r, config):
     #weatherApiKey = config.get('config', 'openweather_api_key')
     forecastApi = config.get('config', 'forecast_api_key')
 
-    weather = getWeather(weatherApiKey)
+    weather = newWeather(forecastApi)
     trains = getTrains()
     gigs = getGigInfo()
     tuneString = getSong(r)
