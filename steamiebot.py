@@ -73,8 +73,8 @@ def getSong(r): # Takes the PRAW object
         for submission in scottishmusictop:
             if any(song_string in submission.url for song_string in song_strings):
                 links_list.append(submission.url)              
-                number = random.randint(0,number_of_songs-1)
-                return links_list[number]
+        number = random.randint(0,len(links_list)-1)
+        return links_list[number]
     else:
         number = random.randint(0,number_of_songs-1)
         return links_list[number] + " (via /r/ScottishMusic)"
