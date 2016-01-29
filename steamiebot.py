@@ -74,10 +74,10 @@ def getSong(r): # Takes the PRAW object
             if any(song_string in submission.url for song_string in song_strings):
                 links_list.append(submission.url)              
         number = random.randint(0,len(links_list)-1)
-        return links_list[number]
+        return links_list[number] + " (via /r/ScottishMusic)"
     else:
         number = random.randint(0,number_of_songs-1)
-        return links_list[number] + " (via /r/ScottishMusic)"
+        return links_list[number]
 
 # function to remove duplicate litems from lists.
 # stolen from stackoverflow. SHAMELESS.
