@@ -169,20 +169,19 @@ def newWeather(apiKey):
     html = response.read()
     data = json.loads(html)
 
-    if len(data['alerts']) == 0:
-        tempMin =  int(data['daily']['data'][0]['temperatureMin'])
-        tempMax =  int(data['daily']['data'][0]['temperatureMax'])
+    tempMin =  int(data['daily']['data'][0]['temperatureMin'])
+    tempMax =  int(data['daily']['data'][0]['temperatureMax'])
 
 
-        weatherString = '**Weather**\n\n'
-        weatherString = weatherString + data['hourly']['summary'] + '\n\n'
+    weatherString = '**Weather**\n\n'
+    weatherString = weatherString + data['hourly']['summary'] + '\n\n'
 
-        if tempMax==tempMin:
-            weatherString = weatherString + "Around " + str(tempMin) + " degrees."
-        else:
-            weatherString = weatherString + "Around "+ str(tempMin) + ' to ' + str(tempMax) + " degrees."
-
+    if tempMax==tempMin:
+        weatherString = weatherString + "Around " + str(tempMin) + " degrees."
     else:
+        weatherString = weatherString + "Around " + str(tempMin) + ' to ' + str(tempMax) + " degrees.\n\n"
+
+    if len(data['alerts']) != 0:
         weatherString = '[**Weather Warning**]('+data['alerts'][-1]['uri']+')\n\n'+ data['alerts'][-1]['description']
     return weatherString
 
