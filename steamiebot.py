@@ -163,6 +163,28 @@ def getGigInfo():
             gigList.append(unicode(gigInfo,'utf-8'))
     return gigList
 
+def newWeather(apiKey):
+    response = urllib2.urlopen('https://api.forecast.io/forecast/'+apiKey+'/55.8580,-4.2590?units=si')
+    html = response.read()
+    data = json.loads(html)
+
+    if len(data['alerts']) == 0:
+        tempMin =  int(data['daily']['data'][0]['temperatureMin'])
+        tempMax =  int(data['daily']['data'][0]['temperatureMax'])
+
+
+        weatherString = '**Weather**\n\n'
+        weatherString = weatherString + data['hourly']['summary'] + '\n\n'
+
+        if tempMax==tempMin:
+            weatherString = weatherString + "Around " + str(tempMin) + " degrees."
+        else:
+            weatherString = weatherString + "Around "+ str(tempMin) + ' to ' + str(tempMax) + " degrees."
+
+    else:
+        weatherString = '[**Weather Warning**]('+data['alerts'][-1]['uri']+')\n\n'+ data['alerts'][-1]['description']
+    return weatherString
+
 def getWeather(apiKey):
 
     # Function to return the weather, temperature
@@ -208,7 +230,8 @@ def getWeather(apiKey):
 def createPost(r, config):
     title = "The Steamie - {0:%A} {0:%-d} {0:%B} {0:%Y}".format(datetime.date.today())
 
-    weatherApiKey = config.get('config', 'openweather_api_key')
+    #weatherApiKey = config.get('config', 'openweather_api_key')
+    forecastApi = config.get('config', 'forecast_api_key')
 
     weather = getWeather(weatherApiKey)
     trains = getTrains()
@@ -216,9 +239,11 @@ def createPost(r, config):
     tuneString = getSong(r)
     marketString = getMarket(r)
 
-    weatherString = ""
-    for line in weather:
-        weatherString += line + "\n\n"
+    #weatherString = ""
+    #for line in weather:
+    #    weatherString += line + "\n\n"
+
+    weatherStr = getWeather(forecastApi)
 
     trainString = ""
     for line in trains:
@@ -228,8 +253,9 @@ def createPost(r, config):
     for line in gigs:
         gigString += line + "\n\n"
 
-    body = ("**Weather**\n\n"
-            + weatherString + "\n\n"
+    body = (#"**Weather**\n\n"
+            #+ weatherString + "\n\n"
+            weatherStr +
             "**Travel**\n\n"
             + trainString + "\n\n"
             "**What's On Today**\n\n"
