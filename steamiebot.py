@@ -234,7 +234,7 @@ def createPost(r, config):
     #weatherApiKey = config.get('config', 'openweather_api_key')
     forecastApi = config.get('config', 'forecast_api_key')
 
-    weather = newWeather(forecastApi)
+    #weather = getWeather(weatherApiKey)
     trains = getTrains()
     gigs = getGigInfo()
     tuneString = getSong(r)
@@ -244,7 +244,7 @@ def createPost(r, config):
     #for line in weather:
     #    weatherString += line + "\n\n"
 
-    weatherStr = getWeather(forecastApi)
+    weatherStr = newWeather(forecastApi)
 
     trainString = ""
     for line in trains:
