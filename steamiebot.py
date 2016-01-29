@@ -183,7 +183,7 @@ def newWeather(apiKey):
             weatherString = weatherString + "Around "+ str(tempMin) + ' to ' + str(tempMax) + " degrees."
 
     else:
-        weatherString = '[**Weather Warning**]('+data['alerts'][-1]['uri']+')\n\n'+ data['alerts'][-1]['description']
+        weatherString = '[**Weather Warning**]('+data['alerts'][-1]['uri']+')\n\n*'+ data['alerts'][-1]['description']+"*"
     return weatherString
 
 def getWeather(apiKey):
@@ -256,7 +256,7 @@ def createPost(r, config):
 
     body = (#"**Weather**\n\n"
             #+ weatherString + "\n\n"
-            weatherStr +
+            weatherStr + "\n\n" +
             "**Travel**\n\n"
             + trainString + "\n\n"
             "**What's On Today**\n\n"
