@@ -20,7 +20,7 @@ def getMarket(r):
     for post in newposts:
         received_time = datetime.datetime.fromtimestamp(int(post.created_utc))
         time_difference = current_time - received_time
-        if time_difference < datetime.timedelta(days=1):
+        if time_difference < datetime.timedelta(days=7):
             posts[post.permalink] = post.title
     if len(posts)==0:
         marketString = 'No recent posts'
@@ -181,7 +181,7 @@ def newWeather(apiKey):
     else:
         weatherString = weatherString + "Around " + str(tempMin) + ' to ' + str(tempMax) + " degrees.\n\n"
 
-    if len(data['alerts']) != 0:
+    if 'alerts' in data: #len(data['alerts']) != 0:
         weatherString = weatherString + '[**Weather Warning**]('+data['alerts'][-1]['uri']+')\n\n'+ data['alerts'][-1]['description']
     return weatherString
 
