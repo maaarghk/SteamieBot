@@ -12,6 +12,22 @@ import ConfigParser
 from time import sleep
 import urllib2, json, time
 
+def getDayInHistory():
+    historyArray = []    
+    todayInHistoryPage = urllib.request.urlopen('http://www.bbc.co.uk/scotland/history/onthisday/{dt:%B}/{dt.day}'.format(dt=datetime.datetime.now()).lower())
+    historySoup = BeautifulSoup(todayInHistoryPage,'html.parser')    
+    for vevent_tag in historySoup.find_all("div", {"class" : "story"}):
+        contentCheck = re.search('[a-zA-Z]',vevent_tag.text)
+        if contentCheck:
+            if "recipe" in vevent_tag.text:
+                vevent_tag.next_sibling
+                pass           
+            else:
+                historyArray.append(vevent_tag.text), vevent_tag.next_sibling
+    if not historyArray:
+        historyArray.append("Nothing, apparently!")
+    return historyArray
+
 def getMarket(r):
     marketString = ''
     current_time = datetime.datetime.now()
@@ -238,6 +254,7 @@ def createPost(r, config):
     gigs = getGigInfo()
     tuneString = getSong(r)
     marketString = getMarket(r)
+    dayInHistory = getDayInHistory()
 
     #weatherString = ""
     #for line in weather:
@@ -253,6 +270,10 @@ def createPost(r, config):
     for line in gigs:
         gigString += line + "\n\n"
 
+    historyString = ""
+    for line in dayInHistory:
+        historyString += line
+
     body = (#"**Weather**\n\n"
             #+ weatherString + "\n\n"
             weatherStr + "\n\n" +
@@ -260,6 +281,8 @@ def createPost(r, config):
             + trainString + "\n\n"
             "**What's On Today**\n\n"
             + gigString + "\n\n"+
+            "**Today in Scottish History**\n\n"
+            + historyString + "\n\n"+
             "**/r/GlasgowMarket Digest**\n\n"
             +marketString + '\n\n' + 
             "**Tune of the day**\n\n"
