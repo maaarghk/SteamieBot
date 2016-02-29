@@ -13,20 +13,24 @@ from time import sleep
 import urllib2, json, time
 
 def getDayInHistory():
-    historyArray = []    
-    todayInHistoryPage = urllib.request.urlopen('http://www.bbc.co.uk/scotland/history/onthisday/{dt:%B}/{dt.day}'.format(dt=datetime.datetime.now()).lower())
-    historySoup = BeautifulSoup(todayInHistoryPage,'html.parser')    
-    for vevent_tag in historySoup.find_all("div", {"class" : "story"}):
-        contentCheck = re.search('[a-zA-Z]',vevent_tag.text)
-        if contentCheck:
-            if "recipe" in vevent_tag.text:
-                vevent_tag.next_sibling
-                pass           
-            else:
-                historyArray.append(vevent_tag.text), vevent_tag.next_sibling
-    if not historyArray:
+    historyArray = []  
+    try:  
+        todayInHistoryPage = urllib.request.urlopen('http://www.bbc.co.uk/scotland/history/onthisday/{dt:%B}/{dt.day}'.format(dt=datetime.datetime.now()).lower())
+        historySoup = BeautifulSoup(todayInHistoryPage,'html.parser')    
+        for vevent_tag in historySoup.find_all("div", {"class" : "story"}):
+            contentCheck = re.search('[a-zA-Z]',vevent_tag.text)
+            if contentCheck:
+                if "recipe" in vevent_tag.text:
+                    vevent_tag.next_sibling
+                    pass           
+                else:
+                    historyArray.append(vevent_tag.text), vevent_tag.next_sibling
+        if not historyArray:
+            historyArray.append("Nothing, apparently!")
+        return historyArray
+    except:
         historyArray.append("Nothing, apparently!")
-    return historyArray
+        return historyArray
 
 def getMarket(r):
     marketString = ''
