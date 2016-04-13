@@ -77,7 +77,7 @@ def getSong(r): # Takes the PRAW object
                 sending_user_join_date = datetime.datetime.fromtimestamp(int(sending_user.created_utc))
                 time_difference = current_time - sending_user_join_date
                 if time_difference < datetime.timedelta(days=how_old):
-                    print "User '"+str(message.author)+"' must be " + how_old + " days old to submit songs"
+                    print "User '"+str(message.author)+"' must be " + str(how_old) + " days old to submit songs"
                     continue
                 available_links = re.findall(r'(https?://[^\s]+)', message.body)
                 for link in available_links:
