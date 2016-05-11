@@ -97,7 +97,7 @@ def getSong(r): # Takes the PRAW object
         return links_list[number] + " (via /r/ScottishMusic)"
     else:
         number = random.randint(0,number_of_songs-1)
-        return links_list[number]
+        return links_list[number] + " (suggested by /u/" + author_list[number] + ")"
 
 # function to remove duplicate litems from lists.
 # stolen from stackoverflow. SHAMELESS.
