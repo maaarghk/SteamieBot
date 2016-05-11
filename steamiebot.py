@@ -89,18 +89,22 @@ def getSong(r): # Takes the PRAW object
 
     number_of_songs = len(links_list)
     if number_of_songs==0:
+         suffix_string =  "No eligible links submiited today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
+      if number_of_songs==1:
+            suffix_string = "Only one eligible link submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
+        else:
+            suffix_string = "Picked from ' + str(number_of_songs) + ' eligible links submiited today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
+    + "\n\n"
+    if number_of_songs==0:
         scottishmusictop = r.get_subreddit('scottishmusic').get_hot(limit=5)
         for submission in scottishmusictop:
             if any(song_string in submission.url for song_string in song_strings):
                 links_list.append(submission.url)              
         number = random.randint(0,len(links_list)-1)
-        return links_list[number] + " (via /r/ScottishMusic)"
+        return links_list[number] + " (via /r/ScottishMusic) \n\n" + suffix_string
     else:
         number = random.randint(0,number_of_songs-1)
-        if number_of_songs==1:
-            suffix_string = 'Only one eligible link submitted today'
-        else:
-            suffix_string = 'Picked from ' + str(number_of_songs) + ' eligible links submiited today'
+      
         return links_list[number] + " (suggested by /u/" + author_list[number].name + ") \n\n" + suffix_string 
 
 # function to remove duplicate litems from lists.
@@ -294,8 +298,7 @@ def createPost(r, config):
             "**/r/GlasgowMarket Digest**\n\n"
             +marketString + '\n\n' + 
             "**Tune of the day**\n\n"
-            + tuneString
-            + "\n\n[Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)")
+            + tuneString)
 
     return title,body
 
