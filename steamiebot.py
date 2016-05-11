@@ -94,7 +94,7 @@ def getSong(r): # Takes the PRAW object
         suffix_string = "Only one eligible link submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
     else:
         suffix_string = "Picked from " + str(number_of_songs) + " eligible links submiited today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
-    + "\n\n"
+
     if number_of_songs==0:
         scottishmusictop = r.get_subreddit('scottishmusic').get_hot(limit=5)
         for submission in scottishmusictop:
@@ -104,7 +104,6 @@ def getSong(r): # Takes the PRAW object
         return links_list[number] + " (via /r/ScottishMusic) \n\n" + suffix_string
     else:
         number = random.randint(0,number_of_songs-1)
-      
         return links_list[number] + " (suggested by /u/" + author_list[number].name + ") \n\n" + suffix_string 
 
 # function to remove duplicate litems from lists.
