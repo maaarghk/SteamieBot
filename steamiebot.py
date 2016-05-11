@@ -112,9 +112,12 @@ def getSong(r): # Takes the PRAW object
 
 def get_title(vid):
     id = vid.split('/')
-    id = id(-1)
+    id = id[-1]
     print("Video Title Function")
     print(id)
+    req_url = 'http://youtube.com/get_video_info?video_id=' + id
+    songinfo = urllib.request.urlopen(req_url)
+    print songinfo
 
 
 def uniq(input):
