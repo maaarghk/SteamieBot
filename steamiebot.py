@@ -90,10 +90,10 @@ def getSong(r): # Takes the PRAW object
     number_of_songs = len(links_list)
     if number_of_songs==0:
          suffix_string =  "No eligible links submiited today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
-      if number_of_songs==1:
-            suffix_string = "Only one eligible link submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
-        else:
-            suffix_string = "Picked from ' + str(number_of_songs) + ' eligible links submiited today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
+    elif number_of_songs==1:
+        suffix_string = "Only one eligible link submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
+    else:
+        suffix_string = "Picked from " + str(number_of_songs) + " eligible links submiited today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
     + "\n\n"
     if number_of_songs==0:
         scottishmusictop = r.get_subreddit('scottishmusic').get_hot(limit=5)
