@@ -104,15 +104,19 @@ def getSong(r): # Takes the PRAW object
         return links_list[number] + " (via /r/ScottishMusic) \n\n" + suffix_string
     else:
         number = random.randint(0,number_of_songs-1)
-        get_title(links_list[number])
+        #get_title(links_list[number])
         return links_list[number] + " (suggested by /u/" + author_list[number].name + ") \n\n" + suffix_string 
 
 # function to remove duplicate litems from lists.
 # stolen from stackoverflow. SHAMELESS.
 
 def get_title(vid):
-    id = vid.split('/')
-    id = id[-1]
+    if 'youtu.be' in vid:
+        id = vid.split('/')
+        id = id[-1]
+    else:
+        id = vid.split('=')
+        id = id[-1]
     print("Video Title Function")
     print(id)
     req_url = 'http://youtube.com/get_video_info?video_id=' + id
