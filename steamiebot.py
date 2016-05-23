@@ -53,7 +53,8 @@ def getMarket(r):
 def getSong(r): # Takes the PRAW object
     # Users must have held their account for this number of days to be able to submit suggestions
     how_old = 30
-    song_strings = ["youtube.com/","youtu.be/"]
+    pattern = re.compile("(?:http[s]?://www\.youtube\.com/watch\?v=|http://youtu.be/)([0-9A-Za-z\-_]*)")
+    #song_strings = ["youtube.com/","youtu.be/"]
     messages = r.get_unread(unset_has_mail=True,update_user=True)
 
     current_time = datetime.datetime.now()
@@ -80,6 +81,8 @@ def getSong(r): # Takes the PRAW object
                 if time_difference < datetime.timedelta(days=how_old):
                     print "User '"+str(message.author)+"' must be " + str(how_old) + " days old to submit songs"
                     continue
+                ids = list(pattern.findall(message.body))
+                print "ID" + str(ids)
                 available_links = re.findall(r'(https?://[^\s]+)', message.body)
                 for link in available_links:
                     if any(song_string in link for song_string in song_strings):
