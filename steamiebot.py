@@ -5,6 +5,7 @@
 """
 
 import re, pyowm, praw, datetime, sys, OAuth2Util, random, traceback
+import sqlite3
 from six.moves import urllib
 from bs4 import BeautifulSoup, SoupStrainer
 from OAuth2Util import OAuth2Util
@@ -54,6 +55,9 @@ def getMarket(r):
 
 def getSong(r): # Takes the PRAW object
     # Users must have held their account for this number of days to be able to submit suggestions
+    conn = sqlite3.connect('tunes.db')
+    c = conn.cursor()
+    
     how_old = 30
     pattern = re.compile("(?:http[s]?://www\.youtube\.com/watch\?v=|http://youtu.be/)([0-9A-Za-z\-_]*)")
     #song_strings = ["youtube.com/","youtu.be/"]
@@ -117,6 +121,30 @@ def getSong(r): # Takes the PRAW object
 # function to remove duplicate litems from lists.
 # stolen from stackoverflow. SHAMELESS.
 
+def get_UID(c,username):
+    num = check_UID(c,username)
+    if num is 0:
+        return addUser(c,username)
+    else:
+        return num
+        
+def check_UID(c,username):
+    name = (username,)
+    c.execute('SELECT user_id FROM submitter WHERE name=?',name)
+    number = c.fetchall()
+    if len(number) is 0:
+        return 0
+    else:
+         return number[0][0]
+         
+def addUser(c,username):
+    name = (username,)
+    c.execute('INSERT into submitter VALUES (null, ?)',name)
+    c.commit()
+    c.execute('SELECT user_id FROM submitter WHERE name=?',name)
+    number = c.fetchall()
+    return number[0][0]
+    
 def get_title(vid):
     if 'youtu.be' in vid:
         id = vid.split('/')
