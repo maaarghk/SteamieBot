@@ -1,5 +1,5 @@
 import httplib2
-import argparse
+#import argparse
 from googleapiclient.discovery import build
 from oauth2client.file import Storage
 from oauth2client.client import flow_from_clientsecrets, AccessTokenRefreshError
@@ -12,8 +12,8 @@ class YouTubeInfo(object):
                 scope = "https://www.googleapis.com/auth/youtube.readonly"
                 storage = Storage("tokens/google.json")
                 credentials = storage.get()
-                parser = argparse.ArgumentParser(parents=[argparser])
-                flags = argparser.parse_args()
+                #parser = argparse.ArgumentParser(parents=[argparser])
+                #flags = argparser.parse_args()
                 if credentials is None or credentials.invalid:
                         flow = flow_from_clientsecrets("secrets/google_client_secrets.json",scope=scope)
                         credentials = run_flow(flow, storage, flags)
