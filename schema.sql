@@ -15,6 +15,7 @@ create table submitted (
 
 create table chosen (
     id                  integer primary key autoincrement not null,
+    chosen_date         date,
     submitted_id        integer, FOREIGN KEY(submitted_id) references submitted(submitted_id)
 );
 
