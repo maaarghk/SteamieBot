@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup, SoupStrainer
 from OAuth2Util import OAuth2Util
 import ConfigParser
 from time import sleep
+from youtube import YouTubeInfo
 import urllib2, json, time
 
 def getDayInHistory():
@@ -104,7 +105,7 @@ def getSong(r): # Takes the PRAW object
         return links_list[number] + " (via /r/ScottishMusic) \n\n" + suffix_string
     else:
         number = random.randint(0,number_of_songs-1)
-        #get_title(links_list[number])
+        print get_title(links_list[number])
         return links_list[number] + " (suggested by /u/" + author_list[number].name + ") \n\n" + suffix_string 
 
 # function to remove duplicate litems from lists.
@@ -117,11 +118,8 @@ def get_title(vid):
     else:
         id = vid.split('=')
         id = id[-1]
-    print("Video Title Function")
-    print(id)
-    req_url = 'http://youtube.com/get_video_info?video_id=' + id
-    songinfo = urllib.request.urlopen(req_url)
-    print songinfo
+    youtube = YouTubeInfo()
+    return youtube.getTitle(id)
 
 
 def uniq(input):
