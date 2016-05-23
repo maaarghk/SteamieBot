@@ -39,7 +39,8 @@ def getMarket(r):
     newposts = r.get_subreddit('GlasgowMarket').get_new()
     posts = {}
     for post in newposts:
-        print post.link_flair_text
+        if post.link_flair_text is not None:
+            continue
         received_time = datetime.datetime.fromtimestamp(int(post.created_utc))
         time_difference = current_time - received_time
         if time_difference < datetime.timedelta(days=7):
