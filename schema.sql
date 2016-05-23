@@ -6,7 +6,7 @@ create table submitter (
 
 create table submitted (
     submitted_id        integer primary key autoincrement not null,
-    name                text,
+    title               text,
     url                 text,
     whensub             date,
     comment             text,
