@@ -1,6 +1,5 @@
 create table submitter (
   user_id               integer primary key autoincrement not null,
-  age                   text,
   name                  text
 );
 
