@@ -23,7 +23,7 @@ class YouTubeInfo(object):
         def getTitle(self,this_id):
                 if not self.validate(this_id):
                         return "Invalid ID"
-                response = self.yt.videos().list(part="id,snippet,statistics,contentDetails",id=this_id).execute()
+                response = self.yt.videos().list(part="id,snippet,statistics,contentDetails,status",id=this_id).execute()
                 info = response['items'][0]
                 snippet = info['snippet']
                 title = snippet['title']
