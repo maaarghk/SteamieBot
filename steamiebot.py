@@ -82,7 +82,7 @@ def getSong(r): # Takes the PRAW object
                     print "User '"+str(message.author)+"' must be " + str(how_old) + " days old to submit songs"
                     continue
                 ids = list(pattern.findall(message.body))
-                if len(ids>0):
+                if len(ids)>0:
                     links_list.append(ids[0])
                     author_list.append(message.author)
                 #print "ID" + str(ids)
