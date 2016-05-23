@@ -121,6 +121,12 @@ def getSong(r): # Takes the PRAW object
 # function to remove duplicate litems from lists.
 # stolen from stackoverflow. SHAMELESS.
 
+def add_submission(c,uid,youtube_id,message_date,comment):
+    title = get_title(youtube_id)
+    values = (title,youtube_id,message_date,comment,uid)
+    c.execute('INSERT into submitted VALUES (null,?,?,?,?,?',values)
+    c.commit()
+
 def get_UID(c,username):
     num = check_UID(c,username)
     if num is 0:
