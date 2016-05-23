@@ -82,34 +82,35 @@ def getSong(r): # Takes the PRAW object
                     print "User '"+str(message.author)+"' must be " + str(how_old) + " days old to submit songs"
                     continue
                 ids = list(pattern.findall(message.body))
-                print "ID" + str(ids)
-                available_links = re.findall(r'(https?://[^\s]+)', message.body)
-                for link in available_links:
-                    if any(song_string in link for song_string in song_strings):
-                        links_list.append(link)
-                        author_list.append(message.author)
-                        # Only allow one Youtube link per message - we'll just take the first
-                        break
+                if len(ids>0):
+                    links_list.append(ids[0])
+                    author_list.append(message.author)
+                #print "ID" + str(ids)
+                #available_links = re.findall(r'(https?://[^\s]+)', message.body)
+                #for link in available_links:
+                #    if any(song_string in link for song_string in song_strings):
+                #        links_list.append(link)
+                #        author_list.append(message.author)
+                #        # Only allow one Youtube link per message - we'll just take the first
+                #        break
 
     number_of_songs = len(links_list)
     if number_of_songs==0:
-         suffix_string =  "No eligible links submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
-    elif number_of_songs==1:
-        suffix_string = "Only one eligible link submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
-    else:
-        suffix_string = "Picked from " + str(number_of_songs) + " eligible links submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
-
-    if number_of_songs==0:
+        suffix_string =  "No eligible links submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
         scottishmusictop = r.get_subreddit('scottishmusic').get_hot(limit=5)
         for submission in scottishmusictop:
             if any(song_string in submission.url for song_string in song_strings):
                 links_list.append(submission.url)              
         number = random.randint(0,len(links_list)-1)
         return links_list[number] + " (via /r/ScottishMusic) \n\n" + suffix_string
+    elif number_of_songs==1:
+        suffix_string = "Only one eligible link submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
     else:
-        number = random.randint(0,number_of_songs-1)
-        title = get_title(links_list[number])
-        return "["+title+"]("+links_list[number] + ") (suggested by /u/" + author_list[number].name + ") \n\n" + suffix_string 
+        suffix_string = "Picked from " + str(number_of_songs) + " eligible links submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
+
+    number = random.randint(0,number_of_songs-1)
+    title = get_title(links_list[number])
+    return "["+title+"](https://youtu.be/"+links_list[number] + ") (suggested by /u/" + author_list[number].name + ") \n\n" + suffix_string 
 
 # function to remove duplicate litems from lists.
 # stolen from stackoverflow. SHAMELESS.
