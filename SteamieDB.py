@@ -31,7 +31,14 @@ class SteamieDB(object):
         for out in output:
             print out
 
+        print "CHOSEN"
+        self.c.execute('SELECT * from chosen')
+        output =  self.c.fetchall()
+        for out in output:
+            print out
+
     def close(self):
+        self.conn.commit()
         self.conn.close()
 
     def checkDB(self,hash):
@@ -43,6 +50,15 @@ class SteamieDB(object):
         self.c.execute('SELECT submitted_id from submitted where UID=?',(hash,))
         output  = self.c.fetchall()
         return output[0][0]
+
+    def getIDfromURL(self,url):
+        self.c.execute('SELECT submitted_id from submitted where url=?',(url,))
+        output = self.c.fetchone()
+        print url + str(output)
+        if output is not None:
+            return output[0]
+        else:
+            return -1
 
     def getUsersDailyPosts(self,user): # Is user ineligible
         now = datetime.datetime.now()
@@ -81,10 +97,10 @@ class SteamieDB(object):
                 ids.remove(number)
             else:
                 selected = True
-        self.c.execute('SELECT * from submitted where submitted_id=?',ids[number])
+            print ids[number]
+        selected = (ids[number],)
+        self.c.execute('SELECT * from submitted where submitted_id=?',selected)
         return self.c.fetchone()
-
-
 
     def isIneligbile(self,id):
         self.c.execute('SELECT * from ineligible where submitted_id=?',(id,))
@@ -98,7 +114,7 @@ class RedditDB(object):
 
     def __init__(self):
         self.r = praw.Reddit("Steamie Poster for /r/glasgow v0.1.0")
-        #self.youtube = YouTubeInfo()
+        self.youtube = YouTubeInfo()
         o = OAuth2Util(self.r)
         o.refresh()
 
@@ -106,10 +122,60 @@ class RedditDB(object):
         self.post_time = 5 # AM. We need this to seperate days for users
 
     def get_title(self,id):
-        return "Test"
+        #return "Test"
         return self.youtube.getTitle(id)
 
+    def populateDB(self,db):
+        # Insert the default song
+        default_id = 'dQw4w9WgXcQ'
+        title = self.get_title('dQw4w9WgXcQ')
+        values = (title,default_id,0,'steamiebot')
+        text = pickle.dumps(values)
+        hash = hashlib.md5(text).hexdigest()
+        if db.checkDB(hash):
+            db_input = values + (hash,)
+            db.c.execute('INSERT into submitted VALUES (null,?,?,?,?,?)',db_input)
+            db.conn.commit()
+
+        message_gen = self.r.get_messages(limit=None)
+        pattern = re.compile("(?:http[s]?://www\.youtube\.com/watch\?v=|http://youtu.be/)([0-9A-Za-z\-_]*)")
+        for message in message_gen:
+            ids = list(pattern.findall(message.body))
+            if len(ids) is 0: # No Youtube links in this message
+                continue
+            for vid_id in ids:
+                title = self.get_title(vid_id)
+                received_time = int(message.created_utc)
+                values = (title,vid_id,received_time,str(message.author))
+                text = pickle.dumps(values)
+                hash = hashlib.md5(text).hexdigest()
+                if db.checkDB(hash):
+                    db_input = values + (hash,)
+                    db.c.execute('INSERT into submitted VALUES (null,?,?,?,?,?)',db_input)
+                    db.conn.commit()
+
+    def populateSubmitted(self,db):
+        pattern = re.compile("(?:http[s]?://www\.youtube\.com/watch\?v=|http://youtu.be/)([0-9A-Za-z\-_]*)")
+        posts_gen = self.r.get_me().get_submitted(limit=None)
+        for posts in posts_gen:
+            subreddit = str(posts.subreddit)
+            if str(posts.subreddit) != 'glasgow':
+                continue
+            body = posts.selftext
+            ids = list(pattern.findall(body))
+            if len(ids) is 0: # No Youtube links in this message
+                continue
+            for vid_id in ids:
+                ID = db.getIDfromURL(vid_id)
+                date = int(posts.created_utc)
+                db.c.execute('INSERT into chosen VALUES (null,?,?,?)',(date,vid_id,ID))
+                db.conn.commit()
+
     def getMessages(self,db):
+        message_gen =  self.r.get_messages(limit=None)
+        for message in message_gen:
+            print message
+        return
         pattern = re.compile("(?:http[s]?://www\.youtube\.com/watch\?v=|http://youtu.be/)([0-9A-Za-z\-_]*)")
         current_time = datetime.datetime.now()
         messages = self.r.get_unread(unset_has_mail=True,update_user=True)
@@ -129,9 +195,6 @@ class RedditDB(object):
                 if db.checkDB(hash):
                     db_input = values + (hash,)
                     db.c.execute('INSERT into submitted VALUES (null,?,?,?,?,?)',db_input)
-                    db.c.execute('INSERT into submitted VALUES (null,?,?,?,?,?)',db_input)
-
-                    db.conn.commit()
 
                     # Check to see if the user is eligible for a submission today
                     sending_user = self.r.get_redditor(message.author)
@@ -141,11 +204,14 @@ class RedditDB(object):
                         # We need to get the ID of the submission above to link it to the database
                         submission_id = db.getIDfromUID(hash)
                         db_input = ('User is not 30 days old',submission_id)
-                        db.c.execute('INSERT into ineligible VALUES (?,?)',db_input)
+                        db.c.execute('INSERT into ineligible VALUES (null,?,?)',db_input)
+                    print str(message.author) + str(db.getUsersDailyPosts(str(message.author)))
                     if db.getUsersDailyPosts(str(message.author)):
                         submission_id = db.getIDfromUID(hash)
                         db_input = ('User has submitted a post today',submission_id)
-                        db.c.execute('INSERT into ineligible VALUES (?,?)',db_input)
+                        db.c.execute('INSERT into ineligible VALUES (null,?,?)',db_input)
+
+                    db.conn.commit()
                 else:
                     print "Log: Data already in database"
 
@@ -156,8 +222,9 @@ if __name__ == "__main__":
     db = SteamieDB()
     reddit = RedditDB()
 
-    reddit.getMessages(db)
-
-    db.getSong()
+    reddit.populateDB(db)
+    reddit.populateSubmitted(db)
+    #reddit.getMessages(db)
+    #db.getSong()
     db.test()
     db.close()

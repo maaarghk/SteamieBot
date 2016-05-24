@@ -8,13 +8,16 @@ create table IF NOT EXISTS submitted (
 );
 
 create table IF NOT EXISTS chosen (
+    chosen_id           integer primary key autoincrement not null,
     chosen_date         text,
-    submitted_id        integer primary key, FOREIGN KEY(submitted_id) references submitted(submitted_id)
+    url                 text,
+    submitted_id        integer, FOREIGN KEY(submitted_id) references submitted(submitted_id)
 );
 
 create table IF NOT EXISTS ineligible (
+    ineligible_id       integer primary key autoincrement not null,
     reason              text,
-    submitted_id        integer primary key, FOREIGN KEY(submitted_id) references submitted(submitted_id)
+    submitted_id        integer, FOREIGN KEY(submitted_id) references submitted(submitted_id)
 );
 
 
