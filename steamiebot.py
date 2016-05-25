@@ -57,7 +57,7 @@ def getSong(r): # Takes the PRAW object
     how_old = 3
     pattern = re.compile("(?:http[s]?://www\.youtube\.com/watch\?v=|http://youtu.be/)([0-9A-Za-z\-_]*)")
     song_strings = ["youtube.com/","youtu.be/"]
-    messages = r.get_unread(unset_has_mail=True,update_user=True)
+    messages = r.get_unread(unset_has_mail=True,update_user=True,limit=None)
 
     current_time = datetime.datetime.now()
 
@@ -71,6 +71,7 @@ def getSong(r): # Takes the PRAW object
         received_time = datetime.datetime.fromtimestamp(int(message.created_utc))
         time_difference = current_time - received_time
         if time_difference < datetime.timedelta(days=1):
+            print "Received message from "+str(message.author)
             if message.author in author_list:
                 print "User '"+str(message.author)+"' has already submitted an eligible link for today's post"
             else:
