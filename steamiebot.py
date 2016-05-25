@@ -54,7 +54,7 @@ def getMarket(r):
 
 def getSong(r): # Takes the PRAW object
     # Users must have held their account for this number of days to be able to submit suggestions
-    how_old = 30
+    how_old = 3
     pattern = re.compile("(?:http[s]?://www\.youtube\.com/watch\?v=|http://youtu.be/)([0-9A-Za-z\-_]*)")
     song_strings = ["youtube.com/","youtu.be/"]
     messages = r.get_unread(unset_has_mail=True,update_user=True)
