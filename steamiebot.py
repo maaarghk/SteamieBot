@@ -68,7 +68,6 @@ def getSong(r): # Takes the PRAW object
         #message.mark_as_read()
         if message.was_comment: # We don't want to include comment replies, just PMs
             continue
-        print message
         received_time = datetime.datetime.fromtimestamp(int(message.created_utc))
         time_difference = current_time - received_time
         if time_difference < datetime.timedelta(days=1):
@@ -95,7 +94,7 @@ def getSong(r): # Takes the PRAW object
                 #        author_list.append(message.author)
                 #        # Only allow one Youtube link per message - we'll just take the first
                 #        break
-
+    print links_lists
     number_of_songs = len(links_list)
     if number_of_songs==0:
         suffix_string =  "No eligible links submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
