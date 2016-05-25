@@ -83,7 +83,7 @@ def getSong(r): # Takes the PRAW object
                 if time_difference < datetime.timedelta(days=how_old):
                     print "User '"+str(message.author)+"' must be " + str(how_old) + " days old to submit songs"
                     continue
-                ids = list(pattern.findall(message.body))
+                ids = list(pattern.findall(message.body+" "+message.subject))
                 print "Found links: "+str(ids)
                 if len(ids)>0:
                     links_list.append(ids[0])
