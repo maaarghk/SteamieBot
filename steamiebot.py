@@ -99,7 +99,7 @@ def getSong(r): # Takes the PRAW object
     print links_list
     number_of_songs = len(links_list)
     if number_of_songs==0:
-        suffix_string =  "No eligible links submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
+        suffix_string =  "No eligible links submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&subject=SongRequest&message=YouTube link here)."
         scottishmusictop = r.get_subreddit('scottishmusic').get_hot(limit=5)
         for submission in scottishmusictop:
             if any(song_string in submission.url for song_string in song_strings):
@@ -107,9 +107,9 @@ def getSong(r): # Takes the PRAW object
         number = random.randint(0,len(links_list)-1)
         return links_list[number] + " (via /r/ScottishMusic) \n\n" + suffix_string
     elif number_of_songs==1:
-        suffix_string = "Only one eligible link submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
+        suffix_string = "Only one eligible link submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&subject=SongRequest&message=YouTube link here)."
     else:
-        suffix_string = "Picked from " + str(number_of_songs) + " eligible links submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&amp;subject=SongRequest)."
+        suffix_string = "Picked from " + str(number_of_songs) + " eligible links submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&subject=SongRequest&message=YouTube link here)."
 
     number = random.randint(0,number_of_songs-1)
     title = get_title(links_list[number])
