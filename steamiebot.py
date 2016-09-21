@@ -213,7 +213,7 @@ def getGigInfo():
     return gigList
 
 def newWeather(apiKey):
-    response = urllib2.urlopen('https://api.forecast.io/forecast/'+apiKey+'/55.8580,-4.2590?units=si')
+    response = urllib2.urlopen('https://api.darksky.net/forecast/'+apiKey+'/55.8580,-4.2590?units=si')
     html = response.read()
     data = json.loads(html)
 
@@ -221,7 +221,7 @@ def newWeather(apiKey):
     tempMax =  int(data['daily']['data'][0]['temperatureMax'])
 
 
-    weatherString = '**Weather**\n\n'
+    weatherString = '**Weather** [(Powered by Dark Sky)](https://darksky.net/poweredby/)\n\n'
     weatherString = weatherString + data['hourly']['summary'] + '\n\n'
 
     if tempMax==tempMin:
