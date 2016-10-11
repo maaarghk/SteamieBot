@@ -121,6 +121,9 @@ class RedditDB(object):
         self.how_old = 30
         self.post_time = 5 # AM. We need this to seperate days for users
 
+    def addVideo(self,vid):
+        self.youtube.add_video_to_playlist(vid,'PLwNSRYv3TVjnON4b2Ksq_nXg-dBsmjzI6')
+
     def get_title(self,id):
         #return "Test"
         return self.youtube.getTitle(id)
@@ -155,7 +158,7 @@ class RedditDB(object):
                     db.conn.commit()
 
     def populateSubmitted(self,db):
-        pattern = re.compile("(?:http[s]?://www\.youtube\.com/watch\?v=|http://youtu.be/)([0-9A-Za-z\-_]*)")
+        pattern = re.compile("(?:youtube\.com/watch\?v=|youtu.be/)([0-9A-Za-z\-_]*)")
         posts_gen = self.r.get_me().get_submitted(limit=None)
         for posts in posts_gen:
             subreddit = str(posts.subreddit)
@@ -166,10 +169,12 @@ class RedditDB(object):
             if len(ids) is 0: # No Youtube links in this message
                 continue
             for vid_id in ids:
-                ID = db.getIDfromURL(vid_id)
+                #ID = db.getIDfromURL(vid_id)
+                ID = -1
                 date = int(posts.created_utc)
                 db.c.execute('INSERT into chosen VALUES (null,?,?,?)',(date,vid_id,ID))
                 db.conn.commit()
+                reddit.addVideo(vid_id)
 
     def getMessages(self,db):
         message_gen =  self.r.get_messages(limit=None)
@@ -222,9 +227,10 @@ if __name__ == "__main__":
     db = SteamieDB()
     reddit = RedditDB()
 
-    reddit.populateDB(db)
+    #sqreddit.populateDB(db)
     reddit.populateSubmitted(db)
     #reddit.getMessages(db)
     #db.getSong()
-    db.test()
+    #db.test()
     db.close()
+
