@@ -7,6 +7,7 @@ from youtube import YouTubeInfo
 import hashlib
 import pickle
 import random
+import time
 
 class SteamieDB(object):
 
@@ -122,7 +123,7 @@ class RedditDB(object):
         self.post_time = 5 # AM. We need this to seperate days for users
 
     def addVideo(self,vid):
-        self.youtube.add_video_to_playlist(vid,'PLwNSRYv3TVjnON4b2Ksq_nXg-dBsmjzI6')
+        self.youtube.add_video_to_playlist(vid,'PLwNSRYv3TVjlSlEGV6rq7E643I2m4Xnfx')
 
     def get_title(self,id):
         #return "Test"
@@ -174,7 +175,12 @@ class RedditDB(object):
                 date = int(posts.created_utc)
                 db.c.execute('INSERT into chosen VALUES (null,?,?,?)',(date,vid_id,ID))
                 db.conn.commit()
-                reddit.addVideo(vid_id)
+                try:
+                    reddit.addVideo(vid_id)
+                    time.sleep(1)
+                except:
+                    time.sleep(5)
+                    continue
 
     def getMessages(self,db):
         message_gen =  self.r.get_messages(limit=None)

@@ -2,7 +2,7 @@ create table IF NOT EXISTS submitted (
     submitted_id        integer primary key autoincrement not null,
     url                 text,
     whensub             integer,
-    username            text,
+    username            text
 );
 
 create table IF NOT EXISTS chosen (
