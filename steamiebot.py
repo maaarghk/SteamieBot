@@ -300,6 +300,8 @@ def createPost(r, config):
 
     gigString = ""
     for line in gigs:
+        if len(line)>9 and line[-9:]==', Glasgow':
+            line=line[:-9]
         gigString += line + "\n\n"
 
     historyString = ""
