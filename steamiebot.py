@@ -103,9 +103,12 @@ def getSong(r): # Takes the PRAW object
         scottishmusictop = r.get_subreddit('scottishmusic').get_hot(limit=5)
         for submission in scottishmusictop:
             if any(song_string in submission.url for song_string in song_strings):
-                links_list.append(submission.url)              
-        number = random.randint(0,len(links_list)-1)
-        return links_list[number] + " (via /r/ScottishMusic) \n\n" + suffix_string
+                links_list.append(submission.url) 
+        try:
+            number = random.randint(0,len(links_list)-1)
+            return links_list[number] + " (via /r/ScottishMusic) \n\n" + suffix_string
+        except:
+            return "No songs could be extracted from /r/ScottishMusic. Something went wrong \n\n" + suffix_string
     elif number_of_songs==1:
         suffix_string = "Only one eligible link submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&subject=SongRequest&message=YouTube link here)."
     else:
