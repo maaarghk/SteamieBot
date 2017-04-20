@@ -98,6 +98,12 @@ def getSong(r): # Takes the PRAW object
                 #        break
     print links_list
     number_of_songs = len(links_list)
+    valid_list = []
+    for link in links_list:
+        if validate(link):
+            valid_list.append(link)
+    links_list = valid_list
+    
     if number_of_songs==0:
         suffix_string =  "No eligible links submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&subject=SongRequest&message=YouTube link here)."
         scottishmusictop = r.get_subreddit('scottishmusic').get_hot(limit=5)
@@ -118,8 +124,15 @@ def getSong(r): # Takes the PRAW object
     title = get_title(links_list[number])
     return "["+title+"](https://youtu.be/"+links_list[number] + ") (suggested by /u/" + author_list[number].name + ") \n\n" + suffix_string 
 
-# function to remove duplicate litems from lists.
-# stolen from stackoverflow. SHAMELESS.
+def validate(vid):
+    if 'youtu.be' in vid:
+        id = vid.split('/')
+        id = id[-1]
+    else:
+        id = vid.split('=')
+        id = id[-1]
+    youtube = YouTubeInfo()
+    return youtube.validate(id)
 
 def get_title(vid):
     if 'youtu.be' in vid:
@@ -131,7 +144,8 @@ def get_title(vid):
     youtube = YouTubeInfo()
     return youtube.getTitle(id)
 
-
+# function to remove duplicate litems from lists.
+# stolen from stackoverflow. SHAMELESS.
 def uniq(input):
     output = []
     for x in input:
