@@ -97,12 +97,15 @@ def getSong(r): # Takes the PRAW object
                 #        # Only allow one Youtube link per message - we'll just take the first
                 #        break
     print links_list
-    number_of_songs = len(links_list)
+    
     valid_list = []
     for link in links_list:
         if validate(link):
             valid_list.append(link)
     links_list = valid_list
+    
+    number_of_songs = len(links_list)
+
     
     if number_of_songs==0:
         suffix_string =  "No eligible links submitted today. [Suggest tomorrow's tune](https://www.reddit.com/message/compose/?to=SteamieBot&subject=SongRequest&message=YouTube link here)."
