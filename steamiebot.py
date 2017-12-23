@@ -65,37 +65,31 @@ def getSong(r): # Takes the PRAW object
     links_list = []
 
     for message in messages:
-        #message.mark_as_read()
-        if message.was_comment: # We don't want to include comment replies, just PMs
-            continue
-        received_time = datetime.datetime.fromtimestamp(int(message.created_utc))
-        time_difference = current_time - received_time
-        if time_difference < datetime.timedelta(days=1):
-            print "Received message from "+str(message.author)
-            if message.author in author_list:
-                print "User '"+str(message.author)+"' has already submitted an eligible link for today's post"
-            else:
-                if not message.author:
-                    continue
-                sending_user = r.get_redditor(message.author)
-                sending_user_join_date = datetime.datetime.fromtimestamp(int(sending_user.created_utc))
-                time_difference = current_time - sending_user_join_date
-                if time_difference < datetime.timedelta(days=how_old):
-                    print "User '"+str(message.author)+"' must be " + str(how_old) + " days old to submit songs"
-                    continue
-                ids = list(pattern.findall(message.body+" "+message.subject))
-                print "Found links: "+str(ids)
-                if len(ids)>0:
-                    links_list.append(ids[0])
-                    author_list.append(message.author)
-                #print "ID" + str(ids)
-                #available_links = re.findall(r'(https?://[^\s]+)', message.body)
-                #for link in available_links:
-                #    if any(song_string in link for song_string in song_strings):
-                #        links_list.append(link)
-                #        author_list.append(message.author)
-                #        # Only allow one Youtube link per message - we'll just take the first
-                #        break
+        try:
+            if message.was_comment: # We don't want to include comment replies, just PMs
+                continue
+            received_time = datetime.datetime.fromtimestamp(int(message.created_utc))
+            time_difference = current_time - received_time
+            if time_difference < datetime.timedelta(days=1):
+                print "Received message from "+str(message.author)
+                if message.author in author_list:
+                    print "User '"+str(message.author)+"' has already submitted an eligible link for today's post"
+                else:
+                    if not message.author:
+                        continue
+                    sending_user = r.get_redditor(message.author)
+                    sending_user_join_date = datetime.datetime.fromtimestamp(int(sending_user.created_utc))
+                    time_difference = current_time - sending_user_join_date
+                    if time_difference < datetime.timedelta(days=how_old):
+                        print "User '"+str(message.author)+"' must be " + str(how_old) + " days old to submit songs"
+                        continue
+                    ids = list(pattern.findall(message.body+" "+message.subject))
+                    print "Found links: "+str(ids)
+                    if len(ids)>0:
+                        links_list.append(ids[0])
+                        author_list.append(message.author)
+        except:
+            print "Failed to parse user"
     print links_list
     
     valid_list = []
